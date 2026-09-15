@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Mitzary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;min-height:100%;
+  background:#02000a;
+  font-family:'Cormorant Garamond',serif;
+  overflow-x:hidden;
+}
+
+/* ── CANVAS ESTRELLAS ── */
+#stars-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+}
+
+/* ── PARTÍCULAS CORAZONES ── */
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.heart-p{
+  position:absolute;bottom:-40px;
+  font-size:1rem;opacity:0;
+  animation:riseHeart linear infinite;
+}
+@keyframes riseHeart{
+  0%  {transform:translateY(0) scale(0.6) rotate(-10deg);opacity:0}
+  10% {opacity:.7}
+  90% {opacity:.3}
+  100%{transform:translateY(-110vh) scale(1.1) rotate(10deg);opacity:0}
+}
+
+/* ── ESQUINAS ── */
+.corner{position:fixed;width:32px;height:32px;opacity:.18;z-index:10}
+.c-tl{top:16px;left:16px;border-top:1px solid #e8608a;border-left:1px solid #e8608a}
+.c-tr{top:16px;right:16px;border-top:1px solid #e8608a;border-right:1px solid #e8608a}
+.c-bl{bottom:16px;left:16px;border-bottom:1px solid #e8608a;border-left:1px solid #e8608a}
+.c-br{bottom:16px;right:16px;border-bottom:1px solid #e8608a;border-right:1px solid #e8608a}
+
+/* ── CONTENEDOR PRINCIPAL ── */
+.wrap{
+  position:relative;z-index:2;
+  max-width:640px;margin:0 auto;
+  padding:5rem 2rem 6rem;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── TITULO ── */
+.titulo-wrap{text-align:center;margin-bottom:3rem;opacity:0;animation:fadeUp 1.2s ease forwards .3s}
+.titulo-label{
+  font-family:'Sacramento',cursive;font-size:1.1rem;
+  color:rgba(240,150,180,.65);letter-spacing:.2em;
+  display:block;margin-bottom:.4rem;
+}
+.titulo-main{
+  font-family:'Sacramento',cursive;font-size:4rem;
+  color:#f5d8e8;font-weight:400;line-height:1.1;
+  text-shadow:0 0 60px rgba(232,96,138,.3);
+}
+
+/* ── DIVISOR ── */
+.divider{
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,96,138,.6),transparent);
+  margin-bottom:2.8rem;
+  animation:expandLine 1s ease forwards 1.2s;
+}
+@keyframes expandLine{to{width:120px}}
+
+/* ── PÁRRAFOS ── */
+.carta{
+  display:flex;flex-direction:column;gap:1.6rem;
+  width:100%;
+}
+.parrafo{
+  opacity:0;transform:translateY(22px);
+  transition:opacity .9s ease,transform .9s ease;
+  font-size:1.08rem;
+  color:rgba(245,216,232,.82);
+  line-height:1.85;
+  text-align:center;
+  font-style:italic;
+}
+.parrafo.visible{opacity:1;transform:translateY(0)}
+
+/* primer párrafo — más grande */
+.parrafo:first-child{
+  font-family:'Sacramento',cursive;
+  font-size:1.6rem;font-style:normal;
+  color:#f5d8e8;
+  text-shadow:0 0 30px rgba(232,96,138,.2);
+}
+
+/* último párrafo — firma */
+.parrafo:last-child{
+  font-family:'Sacramento',cursive;
+  font-size:2rem;font-style:normal;
+  color:#e8608a;
+  text-shadow:0 0 30px rgba(232,96,138,.35);
+}
+
+/* ── CORAZÓN CENTRAL ANIMADO ── */
+.heart-center{
+  font-size:2.4rem;
+  animation:heartbeat 1.8s ease-in-out infinite;
+  margin:1rem 0;opacity:0;
+  animation:heartbeat 1.8s ease-in-out infinite,fadeUp 1s ease forwards 2s;
+}
+@keyframes heartbeat{
+  0%,100%{transform:scale(1)}
+  14%{transform:scale(1.25)}
+  28%{transform:scale(1)}
+  42%{transform:scale(1.15)}
+  70%{transform:scale(1)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ── BOTÓN VOLVER ── */
+.btn-back{
+  margin-top:3.5rem;opacity:0;
+  animation:fadeUp 1s ease forwards 2.5s;
+  background:transparent;
+  border:1px solid rgba(232,96,138,.35);
+  color:rgba(232,96,138,.8);
+  font-family:'Cormorant Garamond',serif;
+  font-size:.8rem;letter-spacing:.4em;text-transform:uppercase;
+  padding:.7rem 2rem;cursor:pointer;
+  transition:all .35s ease;
+}
+.btn-back:hover{border-color:rgba(232,96,138,.9);color:#f5d8e8}
+
+/* ── GLOW DE FONDO ── */
+.bg-glow{
+  position:fixed;
+  width:500px;height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(232,96,138,.07) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;z-index:1;
+  animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{
+  0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+<div class="bg-glow"></div>
+<div class="hearts" id="hearts"></div>
+
+<!-- Audio de fondo — misma canción que página 1 -->
+<audio id="bg-audio" loop preload="auto" playsinline webkit-playsinline>
+  <source src="cancion.mp3" type="audio/mpeg">
+</audio>
+
+<div class="corner c-tl"></div>
+<div class="corner c-tr"></div>
+<div class="corner c-bl"></div>
+<div class="corner c-br"></div>
+
+<div class="wrap">
+
+  <div class="titulo-wrap">
+    <span class="titulo-label">una carta para ti</span>
+    <h1 class="titulo-main">Para mi niña hermosa<br> ❤️</h1>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="carta" id="carta">
+
+    <p class="parrafo">
+      Hoy no solo celebramos otro aniversario, celebramos todos esos momentos que hemos compartido — las risas, las locuras, los abrazos, las conversaciones y hasta esos pequeños momentos que quizá parecen insignificantes, pero que para mí significan muchísimo.
+    </p>
+
+    <p class="parrafo">
+      Gracias por llegar a mi vida y hacerla diferente. Gracias por cada sonrisa que me has regalado, por estar conmigo y por permitirme compartir una parte de mi vida contigo.
+    </p>
+
+    <p class="parrafo">
+      No sé qué nos depare el futuro, pero sí sé que quiero seguir creando recuerdos a tu lado, seguir conociéndote, apoyándote y disfrutando cada momento que tengamos juntos.
+    </p>
+
+    <p class="parrafo">
+      Eres una persona muy especial para mí y quiero que nunca olvides lo mucho que te quiero. ❤️ Feliz aniversario, mi amor.
+    </p>
+
+    <p class="parrafo">
+      Gracias por ser tú, gracias por nosotros y gracias por formar parte de mi historia.
+    </p>
+
+    <div class="heart-center">❤️</div>
+
+    <p class="parrafo">
+      Te quiero muchísimo, mi niña hermosa
+    </p>
+
+  </div>
+
+  <button class="btn-back" onclick="window.location.href='cumpleanos_pagina1.html'">← Volver al inicio</button>
+
+</div>
+
+<script>
+// ── AUDIO DE FONDO ──
+const bgAudio = document.getElementById('bg-audio');
+bgAudio.volume = 0.6;
+let audioStarted = false;
+function startAudio(){
+  if(audioStarted) return;
+  audioStarted = true;
+  bgAudio.play();
+}
+document.addEventListener('click',     startAudio, {once:true});
+document.addEventListener('touchstart',startAudio, {once:true, passive:true});
+document.addEventListener('keydown',   startAudio, {once:true});
+setTimeout(() => startAudio(), 500);
+
+// ── ESTRELLAS ANIMADAS ──
+const cv = document.getElementById('stars-canvas');
+const ctx = cv.getContext('2d');
+function resize(){ cv.width=window.innerWidth; cv.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+
+const STARS = Array.from({length:220}, ()=>({
+  x: Math.random()*window.innerWidth,
+  y: Math.random()*window.innerHeight,
+  r: Math.random()*1.2+.2,
+  a: Math.random(),
+  speed: Math.random()*.008+.002,
+  phase: Math.random()*Math.PI*2,
+}));
+
+function drawStars(t){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  STARS.forEach(s=>{
+    const alpha = .3 + .6*(Math.sin(t*s.speed*60+s.phase)*.5+.5);
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,240,250,${alpha})`;
+    ctx.fill();
+  });
+}
+
+// ── CORAZONES FLOTANTES ──
+const hEl = document.getElementById('hearts');
+const emojis = ['❤️','🩷','💕','✨','💫','🌸'];
+for(let i=0;i<18;i++){
+  const h = document.createElement('div');
+  h.className='heart-p';
+  h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  h.style.cssText = `
+    left:${Math.random()*100}%;
+    font-size:${.7+Math.random()*.8}rem;
+    animation-duration:${8+Math.random()*10}s;
+    animation-delay:${Math.random()*10}s;
+  `;
+  hEl.appendChild(h);
+}
+
+// ── APARICIÓN DE PÁRRAFOS AL SCROLL ──
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.parrafo').forEach((p,i)=>{
+  // delay escalonado para que aparezcan bonito
+  p.style.transitionDelay = `${i*0.12}s`;
+  observer.observe(p);
+});
+
+// primer párrafo aparece directo al cargar
+setTimeout(()=>{
+  document.querySelector('.parrafo').classList.add('visible');
+}, 800);
+
+// ── LOOP ANIMACIÓN ──
+let t=0;
+(function loop(){
+  requestAnimationFrame(loop);
+  t+=0.016;
+  drawStars(t);
+})();
+</script>
+</body>
+</html>
